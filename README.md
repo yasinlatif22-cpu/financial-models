@@ -4,7 +4,7 @@ Valuation models built in Excel.
 
 ## Visa Inc. (V): Discounted Cash Flow
 
-**Status: work in progress (v0.1).** Published as-is so the work and the open issues are visible. Known issues are listed below and are being fixed.
+**Status: work in progress (v0.1).** Assumptions and source documentation are being revised. No investment conclusion yet. Published as-is so the work and the open issues are visible. Every item under "Known issues" below is still open; none has been fixed.
 
 File: `V_DCF_Model.xlsx`
 
