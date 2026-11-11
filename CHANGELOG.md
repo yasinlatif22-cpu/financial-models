@@ -1,5 +1,53 @@
 # Changelog -- V_DCF_Model.xlsx
 
+## 2026-11-11 (later the same day) -- fixes from a review pass of the rebuild below
+
+Four things were checked before merging; three turned up real issues, all fixed:
+
+1. **Litigation deduction -- confirmed correct in the real DCF, but wrong in two secondary
+   outputs.** The actual FCF build (`Projections!EBIT = Revenue x Assumptions!reported-margin`,
+   where `reported-margin = ex-litigation-margin - litigation%`) was always deducting litigation
+   correctly -- its effective forward margin is ~61.5%, matching FY2026A's actual 61.2% reported
+   margin. The bug was in two *derived* outputs that treated the 65.1% ex-litigation figure as
+   if it were the direct EBIT driver, skipping the litigation deduction entirely: the
+   growth-vs-margin sensitivity grid (Sensitivity tab) and the reverse-DCF margin solve (Summary
+   tab). Both now subtract the litigation-provision assumption before computing EBIT. The
+   headline base-case price was never affected by this bug; the reverse-DCF margin number was
+   (now ~69.0% reported margin implied, not the ~73.4% ex-litigation-basis figure first
+   reported, which mixed two different margin concepts across a divide).
+2. **Bull/bear rebuilt on the base case's own engine**, not a shortcut. Previously bull and bear
+   pulled from the growth-vs-margin sensitivity grid's flat-CAGR corners -- a different
+   calculation method than the base case's declining glide path. Now `Projections` carries two
+   full parallel columns (bear: `O:S`, bull: `U:Y`) using the exact same row-by-row formulas as
+   the base case (`I:M`), just with shifted growth/margin assumption inputs
+   (`Assumptions!B39:B42`, +/-150bp, applied to every forecast year). The three cases now differ
+   only in assumptions, not mechanics.
+3. **Diluted share count switched from a quarterly weighted average to period-end as-converted
+   plus a hand-built treasury-stock-method calculation.** Previously used Visa's own Q4 FY2026
+   diluted weighted-average share count (1,882mm). Now: period-end (9/30/2026) as-converted
+   basic shares (1,867mm, from the 10-K's "Schedule of Common Stock as Converted," R89.htm:
+   Class A 1,728mm + B-1 3mm + B-2 1mm + B-3 90mm + C 36mm, converted at the disclosed ratios,
+   plus a 9mm preferred-equivalent) *plus* a treasury-stock-method addition computed by hand
+   against the $359.33 period-end price: stock options (4,676,937 outstanding, $230.98
+   weighted-average exercise price, R98.htm) add 1.67mm shares; RSUs (5,279,332 unvested,
+   against $874mm unrecognized compensation cost, R96.htm/R99.htm) add 2.85mm; performance
+   shares (720,408 unvested, against $72mm unrecognized compensation cost) add 0.52mm. Total:
+   1,872mm. Lower than the quarterly average (1,882mm) because Visa kept repurchasing shares
+   through the quarter -- a period-end snapshot sitting below the quarter's average is expected,
+   not a sign either number was wrong. This moved the base-case price from $317.63 to $319.36.
+4. **CRSP coverage vs. `vma-pairs`' "2009-2025" claim -- checked, not wrong.** `vma-pairs`' own
+   `docs/PROVENANCE.md` shows the actual CRSP security-level pull (`crsp.dsf_v2`, CIZ format)
+   used for prices/returns runs 2008-01-02 to 2025-12-31, fully supporting the README's
+   2009-2025 analysis window (2009 start is the strategy's own choice, not a data limit --
+   Visa's March-2008 IPO means 2008 isn't a full year). There is a separate, narrower
+   limitation already disclosed in `vma-pairs/docs/RESULTS.md` (line 149): the CRSP *market
+   index* series (`crsp.dsi`) it also draws on for some comparisons stops at 2024-12-31 -- same
+   limitation this model's beta cross-check ran into. That's an existing, already-disclosed
+   caveat in that repo, not a new finding, and I did not trace which specific `vma-pairs`
+   results depend on the index vs. raw prices.
+
+Updated price: **$319.36 base case, -11.1% vs. market** (previously $317.63 / -11.6%).
+
 ## 2026-11-11 -- rebuild on branch `visa-dcf-rebuild` (not yet merged to `main`)
 
 Audited and rebuilt the model against the issues listed in the README's "Known issues." Not
