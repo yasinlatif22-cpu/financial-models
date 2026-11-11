@@ -4,10 +4,10 @@ Valuation models built in Excel.
 
 ## Visa Inc. (V): Discounted Cash Flow
 
-**Status: work in progress (v0.2), on branch `visa-dcf-rebuild`.** Every item in the old
-"Known issues" list below has been addressed, and the rebuild has been through one full round
-of review that caught and fixed real bugs (see `CHANGELOG.md`) -- but it hasn't had a final
-pass yet, so the status stays work-in-progress. Not merged to `main`.
+**Status: complete (v1.0).** Every item in the old "Known issues" list has been addressed, the
+rebuild went through a review pass that caught and fixed real bugs (see `CHANGELOG.md`), and the
+headline numbers were recomputed outside Excel from the workbook's own inputs. Open limitations
+are listed under "Known issues (still open)".
 
 File: `V_DCF_Model.xlsx`
 
@@ -20,7 +20,7 @@ growth rate or what margin does the current $359.33 price actually require?
 - Required terminal growth rate: **~3.7%**, vs. the 3.0% this model assumes.
 - Required flat *reported* operating margin (i.e. after the litigation-provision deduction,
   the apples-to-apples comparison to what Visa actually reports): **~69.0%**, vs. the 61.2%
-  FY2026A actual. Visa has never posted anything close to 69% in the five years of history here.
+  FY2026A actual. That is above every reported margin in the six years of history here (the highest was 65.7%, in FY2024).
 
 Both levers alone would need to move further than the historical record or this model's own
 terminal-growth assumption supports. That gap -- not a single point estimate -- is the finding.
@@ -33,7 +33,7 @@ cash, debt, shares). The old version mixed 6/30, 9/30 and 10/2/2026.
 | Method | Implied share price | vs. market ($359.33) |
 |---|---|---|
 | **Perpetuity growth (g = 3.0%, WACC = 8.49%) -- base case** | **$319.36** | **-11.1%** |
-| Exit multiple cross-check (15.4x, set by rule = the perpetuity-implied multiple) | $319.36 | -11.1% |
+| Exit multiple at 15.4x (set equal to the perpetuity-implied multiple, so identical by construction, not an independent check) | $319.36 | -11.1% |
 | *Reference only -- if today's actual multiple persisted to FY2031E unchanged:* | | |
 | &nbsp;&nbsp;Mastercard's current EV/EBITDA (22.1x) | $429.88 | +19.6% |
 | &nbsp;&nbsp;Visa's own current EV/EBITDA (23.1x) | $446.47 | +24.2% |
@@ -87,6 +87,8 @@ Seven tabs: Summary, Assumptions, Historicals, Projections, DCF, WACC, Sensitivi
   Aa3/AA- rating itself could not be confirmed from a primary agency document. Debt is ~3% of
   the capital structure, so the effect on WACC is small either way.
 - **Beta choice is the single biggest lever on the conclusion** -- see above. Not resolved here.
+- **Terminal value is about 79% of enterprise value**, so the result is very sensitive to WACC and terminal growth (see the sensitivity tables).
+- **Forward margin:** the base case's effective reported margin is ~61.5% (65.1% ex-litigation less a 3.6% litigation assumption, the FY2023-FY2026 average), about 0.3 points above FY2026A's actual 61.2%.
 - **The growth-vs-margin sensitivity grid is a simplification**: it swaps the actual declining
   glide path for a flat CAGR so the two axes can be solved independently in closed form (the
   bull/base/bear cases below do not have this limitation). Stated directly on the Sensitivity
